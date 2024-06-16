@@ -1,0 +1,60 @@
+task: conll2003
+dataset_path: eriktks/conll2003 # the name of the dataset on the HF Hub.
+dataset_name: null # the dataset configuration to use. Leave `null` if your dataset does not require a config to be passed. See https://huggingface.co/docs/datasets/load_hub#configurations for more info.
+dataset_kwargs: null # any extra keyword arguments that should be passed to the dataset constructor, e.g. `data_dir`.
+training_split: train
+validation_split: validation
+test_split: test
+doc_to_text: | 
+  You are an NLP expert tasked with Named Entity Extraction.
+  Given a sentence, you must identify entities of the type Location (LOC), Miscellaneous (MISC), Organization (ORG) and Person (PER).
+  Your answer must be in the form of a dict {"LOC":["location entity 1", "location entity 2", "..."], "MISC": ["miscellaneous entity 1", "..."], "ORG": [], "PER": []}   
+  Take care, your answer is only valid if it follows the correct format! 
+  Sentence: {{sentence}}
+  Answer:
+doc_to_target: "{{entities}}"
+process_docs: !function utils.process_docs
+output_type: generate_until
+process_results: !function utils.process_results
+metric_list:
+  - metric: is_json
+    aggregation: mean
+    higher_is_better: true
+  - metric: prec_PER
+    aggregation: mean
+    higher_is_better: true
+  - metric: rec_PER
+    aggregation: mean
+    higher_is_better: true
+  - metric: f1_PER
+    aggregation: mean
+    higher_is_better: true
+  - metric: prec_ORG
+    aggregation: mean
+    higher_is_better: true
+  - metric: rec_ORG
+    aggregation: mean
+    higher_is_better: true
+  - metric: f1_ORG
+    aggregation: mean
+    higher_is_better: true
+  - metric: prec_LOC
+    aggregation: mean
+    higher_is_better: true
+  - metric: rec_LOC
+    aggregation: mean
+    higher_is_better: true
+  - metric: f1_LOC
+    aggregation: mean
+    higher_is_better: true
+  - metric: prec_MISC
+    aggregation: mean
+    higher_is_better: true
+  - metric: rec_MISC
+    aggregation: mean
+    higher_is_better: true
+  - metric: f1_MISC
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 0
